@@ -28,7 +28,7 @@ def conv_ang(angulo, tipo):
 # Funcion que grafica un circulo con OpenGL
 def circle(xc,yc,radio,clr):
     n = 0
-    glBegin(GL_LINE_STRIP)
+    glBegin(GL_POLYGON)
     glColor3f(clr[0], clr[1], clr[2])
     nsides = 20
     while(n <= nsides):
@@ -298,6 +298,7 @@ malla_orig = copy.deepcopy(malla)
 def main():
     global t, malla, malla_aux
     running = True
+    paused = False
     pygame.init()
     display=(600,600)
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
@@ -310,9 +311,14 @@ def main():
                 pygame.quit()
                 running=False
                 break
-            
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_SPACE:
+                    if paused == True:
+                        paused = False
+                    elif paused == False:
+                        paused = True
         # Se ejecuta mientras que el tiempo total sea menor al tiempo maximo definido
-        if( running == True and t <= t_max):
+        if( running == True and t <= t_max and paused == False):
             # Se limpia la pantalla de OpenGL
             glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
             
@@ -336,7 +342,7 @@ def main():
             pygame.time.wait(1)
             print("Tiempo procesado: ",t," s")
             t+=ht
-        else:
+        elif(t > t_max and paused == False and running == True):
             running = False
             break
 
